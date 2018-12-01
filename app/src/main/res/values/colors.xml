@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="grey_d5d5d5">#d5d5d5</color>
+    <color name="black_4c4948">#4C4948</color>
+    <color name="orange_yellow">#fabf13</color>
+    <color name="orange_error_hint">#f87b3d</color>
+    <color name="seafoam_blue">#5ab9d1</color>
+    <color name="red_ff3600">#ff3600</color>
+</resources>

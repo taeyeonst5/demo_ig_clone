@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">instagramClone</string>
+    <string name="hint_your_email">Your Email…</string>
+    <string name="hint_your_password">Your Password…</string>
+    <string name="hint_your_nickname">Your nickName…</string>
+    <string name="text_register">Register</string>
+    <string name="text_already_have_an_account_log_in">Already have an account? Log in</string>
+    <string name="text_log_in">Log in</string>
+    <string name="text_don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
+    <string name="message_please_wait">Please Wait...</string>
+</resources>
