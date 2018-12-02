@@ -8,4 +8,7 @@
     <string name="text_log_in">Log in</string>
     <string name="text_don_t_have_an_account_sign_up">Don\'t have an account? Sign up</string>
     <string name="message_please_wait">Please Wait...</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

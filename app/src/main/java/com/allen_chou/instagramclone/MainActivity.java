@@ -1,13 +1,66 @@
 package com.allen_chou.instagramclone;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
+
+import com.allen_chou.instagramclone.Fragment.HomeFragment;
+import com.allen_chou.instagramclone.Fragment.NotificationFragment;
+import com.allen_chou.instagramclone.Fragment.ProfileFragment;
+import com.allen_chou.instagramclone.Fragment.SearchFragment;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity {
+
+    private BottomNavigationView bottomNavigationView;
+    private Fragment selectFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(createNavigationItemSelectedListener());
+        selectFragment = null;
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+    }
+
+    @NonNull
+    private BottomNavigationView.OnNavigationItemSelectedListener createNavigationItemSelectedListener() {
+        return new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.navigation_home:
+                        selectFragment = new HomeFragment();
+                        break;
+                    case R.id.navigation_search:
+                        selectFragment = new SearchFragment();
+                        break;
+                    case R.id.navigation_add:
+                        selectFragment = null;
+                        startActivity(new Intent(MainActivity.this, PostActivity.class));
+                        break;
+                    case R.id.navigation_favorite:
+                        selectFragment = new NotificationFragment();
+                        break;
+                    case R.id.navigation_profile:
+                        SharedPreferences.Editor editor = getSharedPreferences("PREFS",MODE_PRIVATE).edit();
+                        editor.putString("pref_userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        editor.apply();
+                        selectFragment = new ProfileFragment();
+                        break;
+                }
+                if (selectFragment !=null){
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectFragment).commit();
+                }
+                return true;
+            }
+        };
     }
 }
