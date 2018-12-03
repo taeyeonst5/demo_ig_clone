@@ -67,7 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String email = editTextEmail.getText().toString();
                 String password = editTextPassword.getText().toString();
                 String nickName = editTextNickName.getText().toString();
-                //todo "test error Message..."
+                //todo "輸入框 test error 狀況"
                 if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password) || TextUtils.isEmpty(nickName)) {
                     Toast.makeText(RegisterActivity.this, "All fields are required!", Toast.LENGTH_SHORT).show();
                     textInputLayoutEmail.setError(TextUtils.isEmpty(email) ? "must required" : null);
@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
                             String userId = firebaseUser.getUid();
 
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("Users").child(userId);
-                            //todo
+
                             HashMap<String, Object> hashMap = new HashMap<>();
                             hashMap.put("userId", userId);
                             hashMap.put("nickName", nickName);
