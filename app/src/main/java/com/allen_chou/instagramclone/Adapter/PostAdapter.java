@@ -1,14 +1,17 @@
 package com.allen_chou.instagramclone.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.allen_chou.instagramclone.CommentActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -58,8 +61,30 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         publisherInfo(postHolder, post);
         isLiked(post.getPostId(), postHolder.imageLike);
         setLikesCount(post.getPostId(), postHolder.textLikes);
+        getComments(post.getPostId(), postHolder.textComments);
 
-        postHolder.imageLike.setOnClickListener(new View.OnClickListener() {
+        postHolder.imageLike.setOnClickListener(createOnClickListener(postHolder, post));
+
+        postHolder.imageComment.setOnClickListener(createIntentOnClickListener(post));
+        postHolder.textComments.setOnClickListener(createIntentOnClickListener(post));
+    }
+
+    @NonNull
+    private View.OnClickListener createIntentOnClickListener(final Post post) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra(CommentActivity.POST_ID, post.getPostId());
+                intent.putExtra(CommentActivity.PUBLISHER_ID, post.getPublisher());
+                mContext.startActivity(intent);
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener createOnClickListener(@NonNull final PostHolder postHolder, final Post post) {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (postHolder.imageLike.getTag().equals("like")) {
@@ -74,7 +99,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             .child(firebaseUser.getUid()).removeValue();
                 }
             }
-        });
+        };
     }
 
     private void isLiked(String postId, final ImageView imageView) {
@@ -111,6 +136,22 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 likes.setText(dataSnapshot.getChildrenCount() + " likes");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getComments(String postId, final TextView comments) {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Comments").child(postId);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                comments.setText("View All " + dataSnapshot.getChildrenCount() + " Comments");
             }
 
             @Override
