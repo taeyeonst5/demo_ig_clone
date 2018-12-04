@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
@@ -11,6 +13,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.allen_chou.instagramclone.Adapter.CommentAdapter;
+import com.allen_chou.instagramclone.Model.Comment;
 import com.allen_chou.instagramclone.Model.User;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,13 +25,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.DatabaseMetaData;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 
 public class CommentActivity extends AppCompatActivity {
 
     public static final String POST_ID = "postId";
     public static final String PUBLISHER_ID = "publisherId";
+
+    private RecyclerView recyclerView;
+    private CommentAdapter commentAdapter;
+    private List<Comment> commentList;
+
     private ImageView imageProfile;
     private EditText editTextComment;
     private TextView textViewPost;
@@ -77,12 +89,20 @@ public class CommentActivity extends AppCompatActivity {
                 }
             }
         });
+        //recycler
+        recyclerView = findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentList = new ArrayList<>();
+        commentAdapter = new CommentAdapter(this, commentList);
+        recyclerView.setAdapter(commentAdapter);
+
         getImageProfile();
+        readComments();
     }
 
     private void addComment() {
-        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Comments")
-                .child(postId);
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Comments").child(postId);
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("comment", editTextComment.getText().toString());
         hashMap.put("publisher", firebaseUser.getUid());
@@ -108,4 +128,24 @@ public class CommentActivity extends AppCompatActivity {
         });
     }
 
+    private void readComments() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Comments").child(postId);
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                commentList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Comment comment = snapshot.getValue(Comment.class);
+                    commentList.add(comment);
+                }
+
+                commentAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }

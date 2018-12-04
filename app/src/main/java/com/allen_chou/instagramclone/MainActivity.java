@@ -18,7 +18,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private Fragment selectFragment;
+    private Fragment selectFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,8 +26,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(createNavigationItemSelectedListener());
-        selectFragment = null;
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomeFragment()).commit();
+
+        Bundle intent = getIntent().getExtras();
+        //導去ProfileFragment一定要有UserId...
+        if (intent != null) {
+            String publisher = intent.getString(CommentActivity.PUBLISHER_ID);
+
+            SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
+            editor.putString("profileId", publisher);
+            editor.apply();
+
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new ProfileFragment()).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
+        }
     }
 
     @NonNull
@@ -50,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
                         selectFragment = new NotificationFragment();
                         break;
                     case R.id.navigation_profile:
-                        SharedPreferences.Editor editor = getSharedPreferences("PREFS",MODE_PRIVATE).edit();
+                        SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
                         editor.putString("pref_userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
                         editor.apply();
                         selectFragment = new ProfileFragment();
                         break;
                 }
-                if (selectFragment !=null){
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,selectFragment).commit();
+                if (selectFragment != null) {
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectFragment).commit();
                 }
                 return true;
             }
