@@ -6,6 +6,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.allen_chou.instagramclone.Adapter.MyPostAdapter;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -26,6 +29,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class ProfileFragment extends Fragment {
 
     private ImageView imageProfile, imageOptions;
@@ -36,6 +43,9 @@ public class ProfileFragment extends Fragment {
     private String profileId;
 
     private ImageButton imageButtonGrid, imageButtonSave;
+
+    private List<Post> postList;
+    private MyPostAdapter myPostAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,12 +95,21 @@ public class ProfileFragment extends Fragment {
                 }
             }
         });
+
+        //recycler
+        RecyclerView recyclerView = view.findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        postList = new ArrayList<>();
+        myPostAdapter = new MyPostAdapter(getContext(), postList);
+        recyclerView.setAdapter(myPostAdapter);
     }
 
     private void getData() {
         userInfo();
         getFollowersAndFollowing();
         getPostsCount();
+        getMyPost();
 
         //when searchFragment Profile Click intent -> MainActivity -> ProfileFragment 的畫面差異(profileId 與 User不同)
         if (profileId.equals(firebaseUser.getUid())) {
@@ -192,6 +211,29 @@ public class ProfileFragment extends Fragment {
                 }
 
                 textPosts.setText(i + "");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getMyPost() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+                    if (post.getPublisher().equals(profileId)) {
+                        postList.add(post);
+                    }
+                }
+                Collections.reverse(postList);
+                myPostAdapter.notifyDataSetChanged();
             }
 
             @Override
