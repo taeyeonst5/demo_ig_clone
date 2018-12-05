@@ -2,6 +2,7 @@ package com.allen_chou.instagramclone.Fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allen_chou.instagramclone.Adapter.MyPostAdapter;
+import com.allen_chou.instagramclone.EditProfileActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -129,7 +131,7 @@ public class ProfileFragment extends Fragment {
                 String button = buttonEditProfile.getText().toString();
 
                 if (button.equals(getString(R.string.text_edit_profile))) {
-                    //go to Edit Profile
+                    startActivity(new Intent(getContext(), EditProfileActivity.class));
                 } else if (button.equals(getString(R.string.text_follow))) {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                             .child("following").child(profileId).setValue(true);

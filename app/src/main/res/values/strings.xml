@@ -17,4 +17,6 @@
     <string name="text_posts">posts</string>
     <string name="text_edit_profile">Edit Profile</string>
     <string name="text_follow">follow</string>
+    <string name="text_save">SAVE</string>
+    <string name="text_change_photo">Change Photo</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.allen_chou.instagramclone;
+package com.allen_chou.instagramclone.Util;
 
 import android.app.ProgressDialog;
 import android.content.Context;

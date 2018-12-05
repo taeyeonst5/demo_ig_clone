@@ -1,20 +1,19 @@
 package com.allen_chou.instagramclone;
 
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.webkit.MimeTypeMap;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.allen_chou.instagramclone.Util.CommonUtil;
+import com.allen_chou.instagramclone.Util.ProgressDialogUtil;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -74,22 +73,13 @@ public class PostActivity extends AppCompatActivity {
         CropImage.activity().setAspectRatio(1, 1).start(this);
     }
 
-    private String getFileExtension(String filePath) {
-        int strLength = filePath.lastIndexOf(".");
-        if (strLength > 0) {
-            return filePath.substring(strLength + 1).toLowerCase();
-        } else {
-            return null;
-        }
-    }
-
     //todo 參考 https://firebase.google.com/docs/storage/android/upload-files 可做progress跟LifeCycle管理
     private void uploadImage() {
         ProgressDialogUtil.showProgressDialog(this, "Posting...");
 
         if (imageUri != null) {
             final StorageReference fileReference = storageReference.child(System.currentTimeMillis()
-                    + "." + getFileExtension(imageUri.toString()));
+                    + "." + CommonUtil.getFileExtension(imageUri.toString()));
             //upload to Storage
             uploadTask = fileReference.putFile(imageUri);
             //get download url
