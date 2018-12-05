@@ -15,4 +15,6 @@
     <string name="text_following">following</string>
     <string name="text_followers">followers</string>
     <string name="text_posts">posts</string>
+    <string name="text_edit_profile">Edit Profile</string>
+    <string name="text_follow">follow</string>
 </resources>

@@ -88,7 +88,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
+                android:layout_marginEnd="36dp"
                 android:textColor="@color/design_default_color_primary_dark"
                 android:textSize="18sp"
                 android:textStyle="bold"
@@ -165,7 +165,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_percent="0.40" />
+                app:layout_constraintGuide_percent="0.35" />
 
             <LinearLayout
                 android:id="@+id/linearLayout"
@@ -184,6 +184,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:maxLines="1"
+                    android:textStyle="bold"
+                    android:textSize="16sp"
                     android:textColor="@color/colorPrimaryDark"
                     tools:text="UserName" />
 

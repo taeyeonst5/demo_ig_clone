@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.navigation_profile:
                         SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();
-                        editor.putString("pref_userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                        editor.putString("profileId", FirebaseAuth.getInstance().getCurrentUser().getUid());
                         editor.apply();
                         selectFragment = new ProfileFragment();
                         break;
