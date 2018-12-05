@@ -2,16 +2,19 @@ package com.allen_chou.instagramclone.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allen_chou.instagramclone.CommentActivity;
+import com.allen_chou.instagramclone.Fragment.PostDetailFragment;
+import com.allen_chou.instagramclone.Fragment.ProfileFragment;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -69,6 +72,41 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         postHolder.imageComment.setOnClickListener(createIntentOnClickListener(post));
         postHolder.textComments.setOnClickListener(createIntentOnClickListener(post));
+
+        postHolder.imageProfile.setOnClickListener(createProfileFragmentOnClickListener(post));
+        postHolder.textNickName.setOnClickListener(createProfileFragmentOnClickListener(post));
+        postHolder.textPublisher.setOnClickListener(createProfileFragmentOnClickListener(post));
+        postHolder.imagePost.setOnClickListener(createPostDetailFragmentOnClickListener(post));
+    }
+
+    @NonNull
+    private View.OnClickListener createProfileFragmentOnClickListener(final Post post) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
+                editor.putString("profileId", post.getPublisher());
+                editor.apply();
+
+                ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new ProfileFragment()).commit();
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener createPostDetailFragmentOnClickListener(final Post post) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SharedPreferences.Editor editor = mContext.getSharedPreferences("PREFS", Context.MODE_PRIVATE).edit();
+                editor.putString("postId", post.getPostId());
+                editor.apply();
+
+                ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new PostDetailFragment()).commit();
+            }
+        };
     }
 
     @NonNull
