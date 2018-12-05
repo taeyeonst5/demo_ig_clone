@@ -62,24 +62,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
         isLiked(post.getPostId(), postHolder.imageLike);
         setLikesCount(post.getPostId(), postHolder.textLikes);
         getComments(post.getPostId(), postHolder.textComments);
+        isSaved(post.getPostId(), postHolder.imageSave);
 
         postHolder.imageLike.setOnClickListener(createOnClickListener(postHolder, post));
+        postHolder.imageSave.setOnClickListener(createSaveOnClickListener(postHolder, post));
 
         postHolder.imageComment.setOnClickListener(createIntentOnClickListener(post));
         postHolder.textComments.setOnClickListener(createIntentOnClickListener(post));
-    }
-
-    @NonNull
-    private View.OnClickListener createIntentOnClickListener(final Post post) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(mContext, CommentActivity.class);
-                intent.putExtra(CommentActivity.POST_ID, post.getPostId());
-                intent.putExtra(CommentActivity.PUBLISHER_ID, post.getPublisher());
-                mContext.startActivity(intent);
-            }
-        };
     }
 
     @NonNull
@@ -98,6 +87,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             .child(post.getPostId())
                             .child(firebaseUser.getUid()).removeValue();
                 }
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener createSaveOnClickListener(@NonNull final PostHolder postHolder, final Post post) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (postHolder.imageSave.getTag().equals("save")) {
+                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
+                            .child(post.getPostId()).setValue(true);
+                } else {
+                    FirebaseDatabase.getInstance().getReference().child("Saves").child(firebaseUser.getUid())
+                            .child(post.getPostId()).removeValue();
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener createIntentOnClickListener(final Post post) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, CommentActivity.class);
+                intent.putExtra(CommentActivity.POST_ID, post.getPostId());
+                intent.putExtra(CommentActivity.PUBLISHER_ID, post.getPublisher());
+                mContext.startActivity(intent);
             }
         };
     }
@@ -170,6 +188,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                 Glide.with(mContext).load(user.getImageUrl()).into(postHolder.imageProfile);
                 postHolder.textNickName.setText(user.getNickName());
                 postHolder.textPublisher.setText(user.getNickName());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void isSaved(final String postId, final ImageView imageView) {
+        firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference().child("Saves")
+                .child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.child(postId).exists()) {
+                    imageView.setImageResource(R.drawable.ic_saved);
+                    imageView.setTag("saved");
+                } else {
+                    imageView.setImageResource(R.drawable.ic_save_black);
+                    imageView.setTag("save");
+                }
             }
 
             @Override

@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,17 +36,23 @@ import java.util.List;
 
 public class ProfileFragment extends Fragment {
 
+    private static final String TAG = ProfileFragment.class.getSimpleName();
     private ImageView imageProfile, imageOptions;
     private TextView textNickName, textPosts, textFollower, textFollowing, textUserName, textBio;
     private Button buttonEditProfile;
+    private ImageButton imageButtonGrid, imageButtonSave;
 
     private FirebaseUser firebaseUser;
     private String profileId;
 
-    private ImageButton imageButtonGrid, imageButtonSave;
-
     private List<Post> postList;
     private MyPostAdapter myPostAdapter;
+    private RecyclerView recyclerView;
+
+    private List<Post> postListSaves;
+    private MyPostAdapter myPostAdapterSaves;
+    private RecyclerView recyclerViewSaves;
+    private List<String> mySaves;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -74,7 +81,49 @@ public class ProfileFragment extends Fragment {
         imageButtonGrid = view.findViewById(R.id.image_button_grid);
         imageButtonSave = view.findViewById(R.id.image_button_save);
 
-        buttonEditProfile.setOnClickListener(new View.OnClickListener() {
+        buttonEditProfile.setOnClickListener(createEditProfileOnClickListener());
+        imageButtonGrid.setOnClickListener(createButtonGridOnClickListener());
+        imageButtonSave.setOnClickListener(createButtonSaveOnClickListener());
+
+        //recycler
+        recyclerView = view.findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        postList = new ArrayList<>();
+        myPostAdapter = new MyPostAdapter(getContext(), postList);
+        recyclerView.setAdapter(myPostAdapter);
+
+        //recycler_saves
+        recyclerViewSaves = view.findViewById(R.id.recycler_save);
+        recyclerViewSaves.setHasFixedSize(true);
+        recyclerViewSaves.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        postListSaves = new ArrayList<>();
+        myPostAdapterSaves = new MyPostAdapter(getContext(), postListSaves);
+        recyclerViewSaves.setAdapter(myPostAdapterSaves);
+
+        recyclerView.setVisibility(View.VISIBLE);
+        recyclerViewSaves.setVisibility(View.GONE);
+    }
+
+    private void getData() {
+        userInfo();
+        getFollowersAndFollowing();
+        getPostsCount();
+        getMyPost();
+        getMySave();
+
+        //when searchFragment Profile Click intent -> MainActivity -> ProfileFragment 的畫面差異(profileId 與 User不同)
+        if (profileId.equals(firebaseUser.getUid())) {
+            buttonEditProfile.setText(R.string.text_edit_profile);
+        } else {
+            checkFollow();
+            imageButtonSave.setVisibility(View.GONE);
+        }
+    }
+
+    @NonNull
+    private View.OnClickListener createEditProfileOnClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String button = buttonEditProfile.getText().toString();
@@ -94,30 +143,29 @@ public class ProfileFragment extends Fragment {
                             .child("followers").child(firebaseUser.getUid()).removeValue();
                 }
             }
-        });
-
-        //recycler
-        RecyclerView recyclerView = view.findViewById(R.id.recycler);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
-        postList = new ArrayList<>();
-        myPostAdapter = new MyPostAdapter(getContext(), postList);
-        recyclerView.setAdapter(myPostAdapter);
+        };
     }
 
-    private void getData() {
-        userInfo();
-        getFollowersAndFollowing();
-        getPostsCount();
-        getMyPost();
+    @NonNull
+    private View.OnClickListener createButtonGridOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerViewSaves.setVisibility(View.GONE);
+            }
+        };
+    }
 
-        //when searchFragment Profile Click intent -> MainActivity -> ProfileFragment 的畫面差異(profileId 與 User不同)
-        if (profileId.equals(firebaseUser.getUid())) {
-            buttonEditProfile.setText(R.string.text_edit_profile);
-        } else {
-            checkFollow();
-            imageButtonSave.setVisibility(View.GONE);
-        }
+    @NonNull
+    private View.OnClickListener createButtonSaveOnClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recyclerView.setVisibility(View.GONE);
+                recyclerViewSaves.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
     private void userInfo() {
@@ -234,6 +282,50 @@ public class ProfileFragment extends Fragment {
                 }
                 Collections.reverse(postList);
                 myPostAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void getMySave() {
+        mySaves = new ArrayList<>();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Saves").child(firebaseUser.getUid());
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    mySaves.add(snapshot.getKey());
+                    Log.d(TAG, "onDataChange: " + snapshot.getKey());
+                }
+                readSaves();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void readSaves() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Posts");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                postListSaves.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Post post = snapshot.getValue(Post.class);
+                    for (String id : mySaves) {
+                        if (post.getPostId().equals(id)) {
+                            postListSaves.add(post);
+                        }
+                    }
+                    myPostAdapterSaves.notifyDataSetChanged();
+                }
             }
 
             @Override
