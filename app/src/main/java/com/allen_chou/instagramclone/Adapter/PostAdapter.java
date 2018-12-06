@@ -18,6 +18,7 @@ import com.allen_chou.instagramclone.Fragment.ProfileFragment;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
+import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -119,6 +120,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
                             .child("Likes")
                             .child(post.getPostId())
                             .child(firebaseUser.getUid()).setValue(true);
+
+                    CommonUtil.addNotifications(post.getPublisher(), "liked your post", post.getPostId(), true);
                 } else {
                     FirebaseDatabase.getInstance().getReference()
                             .child("Likes")

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.allen_chou.instagramclone.Fragment.ProfileFragment;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
+import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -81,6 +82,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
                             .child("following").child(user.getUserId()).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(user.getUserId())
                             .child("followers").child(firebaseUser.getUid()).setValue(true);
+
+                    CommonUtil.addNotificationsByFollow(user.getUserId(), "started following you");
                 } else {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())
                             .child("following").child(user.getUserId()).removeValue();

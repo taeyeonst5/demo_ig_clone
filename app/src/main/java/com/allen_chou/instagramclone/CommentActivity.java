@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.allen_chou.instagramclone.Adapter.CommentAdapter;
 import com.allen_chou.instagramclone.Model.Comment;
 import com.allen_chou.instagramclone.Model.User;
+import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -107,6 +108,10 @@ public class CommentActivity extends AppCompatActivity {
         hashMap.put("publisher", firebaseUser.getUid());
 
         reference.push().setValue(hashMap);
+
+        String text = "commented: " + editTextComment.getText().toString();
+        CommonUtil.addNotifications(publisherId, text, postId, true);
+
         editTextComment.setText("");
         //todo 訊息完應該導頁嗎?
     }

@@ -23,6 +23,7 @@ import com.allen_chou.instagramclone.EditProfileActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
+import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -137,6 +138,8 @@ public class ProfileFragment extends Fragment {
                             .child("following").child(profileId).setValue(true);
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(profileId)
                             .child("followers").child(firebaseUser.getUid()).setValue(true);
+
+                    CommonUtil.addNotificationsByFollow(profileId, "started following you");
 
                 } else if (button.equals(getString(R.string.text_following))) {
                     FirebaseDatabase.getInstance().getReference().child("Follow").child(firebaseUser.getUid())

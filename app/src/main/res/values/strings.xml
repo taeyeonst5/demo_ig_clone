@@ -19,4 +19,5 @@
     <string name="text_follow">follow</string>
     <string name="text_save">SAVE</string>
     <string name="text_change_photo">Change Photo</string>
+    <string name="text_notification">Notification</string>
 </resources>
