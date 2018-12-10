@@ -13,8 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.allen_chou.instagramclone.CommentActivity;
+import com.allen_chou.instagramclone.FollowersActivity;
 import com.allen_chou.instagramclone.Fragment.PostDetailFragment;
 import com.allen_chou.instagramclone.Fragment.ProfileFragment;
+import com.allen_chou.instagramclone.MainActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -73,6 +75,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
 
         postHolder.imageComment.setOnClickListener(createIntentOnClickListener(post));
         postHolder.textComments.setOnClickListener(createIntentOnClickListener(post));
+        postHolder.textLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, FollowersActivity.class);
+                intent.putExtra("id", post.getPostId());
+                intent.putExtra("title", "likes");
+                mContext.startActivity(intent);
+            }
+        });
 
         postHolder.imageProfile.setOnClickListener(createProfileFragmentOnClickListener(post));
         postHolder.textNickName.setOnClickListener(createProfileFragmentOnClickListener(post));

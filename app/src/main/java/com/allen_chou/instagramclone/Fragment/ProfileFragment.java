@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.allen_chou.instagramclone.Adapter.MyPostAdapter;
 import com.allen_chou.instagramclone.EditProfileActivity;
+import com.allen_chou.instagramclone.FollowersActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
@@ -87,6 +88,8 @@ public class ProfileFragment extends Fragment {
         buttonEditProfile.setOnClickListener(createEditProfileOnClickListener());
         imageButtonGrid.setOnClickListener(createButtonGridOnClickListener());
         imageButtonSave.setOnClickListener(createButtonSaveOnClickListener());
+        textFollower.setOnClickListener(createFollowerIntentClickListener("followers"));
+        textFollowing.setOnClickListener(createFollowerIntentClickListener("following"));
 
         //recycler
         recyclerView = view.findViewById(R.id.recycler);
@@ -173,6 +176,19 @@ public class ProfileFragment extends Fragment {
         };
     }
 
+    @NonNull
+    private View.OnClickListener createFollowerIntentClickListener(final String title) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), FollowersActivity.class);
+                intent.putExtra("id", profileId);
+                intent.putExtra("title", title);
+                startActivity(intent);
+            }
+        };
+    }
+
     private void userInfo() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users").child(profileId);
 
@@ -183,7 +199,6 @@ public class ProfileFragment extends Fragment {
                     return;
                 }
                 User user = dataSnapshot.getValue(User.class);
-
                 Glide.with(getContext()).load(user.getImageUrl()).into(imageProfile);
                 textNickName.setText(user.getNickName());
                 textBio.setText(user.getBio());
