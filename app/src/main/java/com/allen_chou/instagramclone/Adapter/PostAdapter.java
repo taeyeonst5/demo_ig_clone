@@ -22,6 +22,7 @@ import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
 import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -56,7 +57,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostHolder> {
     public void onBindViewHolder(@NonNull final PostHolder postHolder, int i) {
         firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         final Post post = mPosts.get(i);
-        Glide.with(mContext).load(post.getPostImage()).into(postHolder.imagePost);
+        Glide.with(mContext).load(post.getPostImage())
+                .apply(new RequestOptions().placeholder(R.drawable.placeholder))
+                .into(postHolder.imagePost);
         if (post.getPostDescription().equals("")) {
             postHolder.textDescription.setVisibility(View.GONE);
         } else {

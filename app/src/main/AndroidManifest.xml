@@ -28,7 +28,8 @@
             android:theme="@style/Base.Theme.AppCompat" />
         <activity android:name=".CommentActivity" />
         <activity android:name=".EditProfileActivity" />
-        <activity android:name=".FollowersActivity"></activity>
+        <activity android:name=".FollowersActivity" />
+        <activity android:name=".OptionsActivity"/>
     </application>
 
 </manifest>

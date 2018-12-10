@@ -23,6 +23,7 @@ import com.allen_chou.instagramclone.EditProfileActivity;
 import com.allen_chou.instagramclone.FollowersActivity;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.User;
+import com.allen_chou.instagramclone.OptionsActivity;
 import com.allen_chou.instagramclone.R;
 import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
@@ -90,6 +91,12 @@ public class ProfileFragment extends Fragment {
         imageButtonSave.setOnClickListener(createButtonSaveOnClickListener());
         textFollower.setOnClickListener(createFollowerIntentClickListener("followers"));
         textFollowing.setOnClickListener(createFollowerIntentClickListener("following"));
+        imageOptions.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), OptionsActivity.class));
+            }
+        });
 
         //recycler
         recyclerView = view.findViewById(R.id.recycler);

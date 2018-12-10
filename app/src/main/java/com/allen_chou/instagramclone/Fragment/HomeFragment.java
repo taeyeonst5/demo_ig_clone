@@ -4,6 +4,7 @@ package com.allen_chou.instagramclone.Fragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recycler;
     private PostAdapter postAdapter;
     private List<Post> posts;
+    private ContentLoadingProgressBar progressBar;
 
     private List<String> followingList;
 
@@ -36,6 +38,7 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        progressBar = view.findViewById(R.id.content_loading_progressbar);
         recycler = view.findViewById(R.id.recycler);
         recycler.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
@@ -91,6 +94,7 @@ public class HomeFragment extends Fragment {
                 }
 
                 postAdapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE);
             }
 
             @Override
