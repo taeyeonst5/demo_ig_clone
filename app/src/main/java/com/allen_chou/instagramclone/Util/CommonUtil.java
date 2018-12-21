@@ -1,7 +1,10 @@
 package com.allen_chou.instagramclone.Util;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -51,5 +54,14 @@ public class CommonUtil {
      */
     public static void addNotificationsByFollow(String userId, String text) {
         addNotifications(userId, text, "", false);
+    }
+
+    public static void alertDialog(Context context, String negativeButtonText
+            , String positiveButtonText, DialogInterface.OnClickListener negativeListener
+            , DialogInterface.OnClickListener positiveListener) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText, negativeListener);
+        alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, positiveButtonText, positiveListener);
+        alertDialog.show();
     }
 }

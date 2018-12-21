@@ -1,17 +1,22 @@
 package com.allen_chou.instagramclone.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.allen_chou.instagramclone.AddStoryActivity;
 import com.allen_chou.instagramclone.Model.Story;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
+import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +31,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
 
+    private static final String TAG = StoryAdapter.class.getSimpleName();
     private Context mContext;
     private List<Story> mStory;
 
@@ -124,13 +130,30 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                     }
                 }
                 if (click) {
-                    //TODO show alert dialog...
+                    if (count > 0) {
+                        CommonUtil.alertDialog(mContext, "View story", "Add Story"
+                                , new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //todo go to story
+                                        Log.d(TAG, "onClick: ");
+                                    }
+                                }, new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        mContext.startActivity(new Intent(mContext, AddStoryActivity.class));
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                    }else {
+                        mContext.startActivity(new Intent(mContext, AddStoryActivity.class));
+                    }
                 } else {
                     if (count > 0) {
-                        textView.setText("My Story");
+                        textView.setText("My story");
                         imageView.setVisibility(View.GONE);
                     } else {
-                        textView.setText("Add Story");
+                        textView.setText("Add story");
                         imageView.setVisibility(View.VISIBLE);
                     }
                 }
