@@ -33,7 +33,7 @@ public class CommonUtil {
 
 
     /**
-     * @param userId db
+     * @param userId publisherId
      * @param text   comment or like or following
      */
     public static void addNotifications(String userId, String text, String postId, boolean isPost) {
