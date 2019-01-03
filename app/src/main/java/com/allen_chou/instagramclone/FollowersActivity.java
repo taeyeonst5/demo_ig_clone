@@ -54,7 +54,7 @@ public class FollowersActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         userList = new ArrayList<>();
-        userAdapter = new UserAdapter(this, userList,false);
+        userAdapter = new UserAdapter(this, userList, false);
         recyclerView.setAdapter(userAdapter);
 
         idList = new ArrayList<>();
@@ -67,6 +67,9 @@ public class FollowersActivity extends AppCompatActivity {
                 break;
             case "followers":
                 getFollowers();
+                break;
+            case "views":
+                getViews();
                 break;
         }
     }
@@ -85,6 +88,12 @@ public class FollowersActivity extends AppCompatActivity {
     private void getFollowers() {
         DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Follow").child(id)
                 .child("followers");
+        reference.addListenerForSingleValueEvent(getListener());
+    }
+
+    private void getViews() {
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Story").child(id)
+                .child(getIntent().getStringExtra("storyId")).child("views");
         reference.addListenerForSingleValueEvent(getListener());
     }
 
