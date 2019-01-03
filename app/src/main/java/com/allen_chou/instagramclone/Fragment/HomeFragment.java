@@ -55,12 +55,12 @@ public class HomeFragment extends Fragment {
         postAdapter = new PostAdapter(getContext(), posts);
         recycler.setAdapter(postAdapter);
 
-//        recyclerStory = view.findViewById(R.id.recycler_story);
-//        recyclerStory.setHasFixedSize(true);
-//        recyclerStory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-//        storyList = new ArrayList<>();
-//        storyAdapter = new StoryAdapter(getContext(), storyList);
-//        recyclerStory.setAdapter(storyAdapter);
+        recyclerStory = view.findViewById(R.id.recycler_story);
+        recyclerStory.setHasFixedSize(true);
+        recyclerStory.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        storyList = new ArrayList<>();
+        storyAdapter = new StoryAdapter(getContext(), storyList);
+        recyclerStory.setAdapter(storyAdapter);
 
         checkFollowing();
 
@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
                     followingList.add(snapshot.getKey());
                 }
                 readPosts();
-//                readStory();
+                readStory();
             }
 
             @Override
@@ -102,7 +102,7 @@ public class HomeFragment extends Fragment {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Post post = snapshot.getValue(Post.class);
                     //顯示自己的post
-                    if (post.getPublisher().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())){
+                    if (post.getPublisher().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
                         posts.add(post);
                     }
                     for (String id : followingList) {

@@ -16,6 +16,7 @@ import com.allen_chou.instagramclone.AddStoryActivity;
 import com.allen_chou.instagramclone.Model.Story;
 import com.allen_chou.instagramclone.Model.User;
 import com.allen_chou.instagramclone.R;
+import com.allen_chou.instagramclone.StoryActivity;
 import com.allen_chou.instagramclone.Util.CommonUtil;
 import com.bumptech.glide.Glide;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,7 +65,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
 
     @Override
     public void onBindViewHolder(@NonNull final StoryViewHolder storyViewHolder, int i) {
-        Story story = mStory.get(i);
+        final Story story = mStory.get(i);
 
         userInfo(story.getUserId(), storyViewHolder, i);
 
@@ -82,7 +83,9 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                 if (storyViewHolder.getAdapterPosition() == 0) {
                     myStory(storyViewHolder.storyAddText, storyViewHolder.storyAdd, true);
                 } else {
-                    //todo go to Story...
+                    Intent intent = new Intent(mContext, StoryActivity.class);
+                    intent.putExtra("userId", story.getUserId());
+                    mContext.startActivity(intent);
                 }
             }
         });
@@ -135,8 +138,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                                 , new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        //todo go to story
-                                        Log.d(TAG, "onClick: ");
+                                        Intent intent = new Intent(mContext, StoryActivity.class);
+                                        intent.putExtra("userId", FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                        mContext.startActivity(intent);
+                                        dialogInterface.dismiss();
                                     }
                                 }, new DialogInterface.OnClickListener() {
                                     @Override
@@ -145,7 +150,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                                         dialogInterface.dismiss();
                                     }
                                 });
-                    }else {
+                    } else {
                         mContext.startActivity(new Intent(mContext, AddStoryActivity.class));
                     }
                 } else {
