@@ -134,7 +134,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
                 }
                 if (click) {
                     if (count > 0) {
-                        CommonUtil.alertDialog(mContext, "View story", "Add Story"
+                        CommonUtil.alertDialog(mContext,"", "View story", "Add Story"
                                 , new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {

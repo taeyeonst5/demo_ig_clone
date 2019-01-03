@@ -112,5 +112,15 @@
         app:layout_constraintTop_toBottomOf="@+id/description_text_view"
         tools:text="View All 20 Comments" />
 
+    <ImageView
+        android:id="@+id/image_more"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/image_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/image_profile"
+        app:srcCompat="@drawable/ic_more" />
+
 
 </android.support.constraint.ConstraintLayout>

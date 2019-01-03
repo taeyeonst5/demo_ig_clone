@@ -10,6 +10,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.StorageTask;
 
 import java.util.HashMap;
 
@@ -56,10 +57,11 @@ public class CommonUtil {
         addNotifications(userId, text, "", false);
     }
 
-    public static void alertDialog(Context context, String negativeButtonText
+    public static void alertDialog(Context context, String title, String negativeButtonText
             , String positiveButtonText, DialogInterface.OnClickListener negativeListener
             , DialogInterface.OnClickListener positiveListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(title);
         alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, negativeButtonText, negativeListener);
         alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, positiveButtonText, positiveListener);
         alertDialog.show();
