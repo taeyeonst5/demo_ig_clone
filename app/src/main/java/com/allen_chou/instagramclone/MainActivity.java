@@ -15,7 +15,12 @@ import com.allen_chou.instagramclone.Fragment.HomeFragment;
 import com.allen_chou.instagramclone.Fragment.NotificationFragment;
 import com.allen_chou.instagramclone.Fragment.ProfileFragment;
 import com.allen_chou.instagramclone.Fragment.SearchFragment;
+import com.allen_chou.instagramclone.Notification.Token;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,6 +38,11 @@ public class MainActivity extends AppCompatActivity {
         Bundle intent = getIntent().getExtras();
         //導去ProfileFragment一定要有UserId...
         if (intent != null) {
+            if (intent.getBoolean("isPendingIntent")) {
+                bottomNavigationView.setSelectedItemId(R.id.navigation_favorite);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new NotificationFragment()).commit();
+                return;
+            }
             String publisher = intent.getString(CommentActivity.PUBLISHER_ID);
 
             SharedPreferences.Editor editor = getSharedPreferences("PREFS", MODE_PRIVATE).edit();

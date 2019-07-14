@@ -15,13 +15,16 @@ import com.allen_chou.instagramclone.Adapter.PostAdapter;
 import com.allen_chou.instagramclone.Adapter.StoryAdapter;
 import com.allen_chou.instagramclone.Model.Post;
 import com.allen_chou.instagramclone.Model.Story;
+import com.allen_chou.instagramclone.Notification.Token;
 import com.allen_chou.instagramclone.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +66,7 @@ public class HomeFragment extends Fragment {
         recyclerStory.setAdapter(storyAdapter);
 
         checkFollowing();
+        updateToken(FirebaseInstanceId.getInstance().getToken());
 
         return view;
     }
@@ -154,6 +158,15 @@ public class HomeFragment extends Fragment {
 
             }
         });
+    }
+
+    private void updateToken(String token) {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Tokens");
+        Token newToken = new Token(token);
+        reference.child(firebaseUser.getUid()).setValue(newToken);
+
     }
 
 }

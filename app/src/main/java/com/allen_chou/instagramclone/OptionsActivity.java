@@ -8,6 +8,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 
 
 public class OptionsActivity extends AppCompatActivity {
@@ -34,6 +36,8 @@ public class OptionsActivity extends AppCompatActivity {
         textLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                FirebaseDatabase.getInstance().getReference("Tokens").child(firebaseUser.getUid()).removeValue();
                 FirebaseAuth.getInstance().signOut();
                 startActivity(new Intent(OptionsActivity.this, WelcomeActivity.class)
                         .setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK));
